@@ -17,6 +17,7 @@ Originally this started as a modification of wipeout-rewrite for wipEoutX, an Xb
 - [x] Ship alpha bleed and mine light fixes from mainline PRs (everything looks smooth and stable now!)
 - [x] New camera angles (cockpit view, top-down view) as well as "modern camera" and "classic camera" look modes for the right analog stick / mouse!
 - [x] Minimap for those hard-to-memorize courses (looking at you, Silverstream)
+- [x] UT99/Q3-style voice taunt support for multiplayer races
 
 # Partially Working:
 - [x] Wipeout 2097/XL style "Preferences" menu with options such as default camera mode, default name, weapons on/off, etc)
@@ -30,7 +31,6 @@ Originally this started as a modification of wipeout-rewrite for wipEoutX, an Xb
 - [ ] FOV change during speed boost
 - [ ] Demo builds(?)
 - [ ] Custom soundtrack support
-- [ ] UT99/Q3-style voice taunt support for multiplayer racees
 - [ ] Integrate SDL1 + OpenGL 1.x patches from wipeout-sdl1 so wipeout-rewrite can be compiled on all versions of SDL/OpenGL from one repo(?)
 - [ ] Vulkan/Metal renderers
 - [ ] VR headset support via SDL3 + OpenXR (with "VR steering" and "controller steering" modes so it can be played with full or partial VR setups)
