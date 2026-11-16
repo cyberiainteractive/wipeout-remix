@@ -90,4 +90,8 @@ void sfx_music_play(uint32_t index, music_playlist_t playlist);
 void sfx_music_mode(sfx_music_mode_t);
 void sfx_music_pause(void);
 
+void sfx_taunt_load(void);
+void sfx_taunt_play_random(void);
+void sfx_taunt_unload(void);
+
 #endif
