@@ -16,8 +16,10 @@ static texture_list_t pilot_portraits;
 
 void taunt_hud_load(void)
 {
-    pilot_portraits =
-        image_get_compressed_textures("wipeout/common/pilots.cmp");
+    for (int i = 0; i < NUM_PILOTS; i++) {
+        pilot_portraits[i] =
+            image_get_compressed_textures(def.pilots[i].portrait);
+    }
 }
 
 void taunt_hud_draw(void)
@@ -28,10 +30,6 @@ void taunt_hud_draw(void)
         return;
     }
 
-    /*
-     * Anchor the panel to the middle-right of the screen.
-     * All offsets and dimensions use the regular HUD scaling.
-     */
     vec2i_t pos = ui_scaled_pos(
         UI_POS_MIDDLE | UI_POS_RIGHT,
         vec2i(-TAUNT_HUD_WIDTH - 8, -TAUNT_HUD_HEIGHT / 2)
@@ -41,7 +39,6 @@ void taunt_hud_draw(void)
         vec2i(TAUNT_HUD_WIDTH, TAUNT_HUD_HEIGHT)
     );
 
-    /* Panel background. */
     render_push_2d(
         pos,
         panel_size,
@@ -49,16 +46,11 @@ void taunt_hud_draw(void)
         RENDER_NO_TEXTURE
     );
 
-    /*
-     * Pilot portraits are stored in the shared pilot texture
-     * list. The pilot index selects the corresponding portrait.
-     */
     uint16_t portrait = texture_from_list(
         pilot_portraits,
         pilot
     );
 
-    /* Avatar position and size. */
     vec2i_t avatar_pos = ui_scaled_pos(
         UI_POS_MIDDLE | UI_POS_RIGHT,
         vec2i(
@@ -78,7 +70,6 @@ void taunt_hud_draw(void)
         portrait
     );
 
-    /* TAUNT label. */
     vec2i_t label_pos = ui_scaled_pos(
         UI_POS_MIDDLE | UI_POS_RIGHT,
         vec2i(
@@ -88,13 +79,12 @@ void taunt_hud_draw(void)
     );
 
     ui_draw_text(
-        "TAUNT",
+        "VOICE COMM",
         label_pos,
         UI_SIZE_8,
         UI_COLOR_ACCENT
     );
 
-    /* Pilot name. */
     vec2i_t name_pos = ui_scaled_pos(
         UI_POS_MIDDLE | UI_POS_RIGHT,
         vec2i(
