@@ -3,6 +3,7 @@
 #include "../utils.h"
 #include "../render.h"
 #include "../platform.h"
+#include "multiplayer/taunt.h"
 
 #include "track.h"
 #include "ship.h"
@@ -100,6 +101,7 @@ void race_update(void) {
 		droid_update(&g.droid, &g.ships[g.pilot]);
 		camera_update(&g.camera, &g.ships[g.pilot], &g.droid);
 		weapons_update();
+		taunt_update();
 		particles_update();
 		scene_update();
 		map_update();
@@ -170,6 +172,7 @@ void race_start(void) {
 	droid_init(&g.droid, &g.ships[g.pilot]);
 	particles_init();
 	weapons_init();
+	taunt_init();
 
 	for (int i = 0; i < len(g.race_ranks); i++) {
 		g.race_ranks[i].points = 0;
