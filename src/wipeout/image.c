@@ -283,23 +283,27 @@ uint16_t image_get_texture_semi_trans(char *name) {
 	return texture_index;
 }
 
+static texture_list_t image_get_compressed_textures_internal(char *name, bool transparent) {
+    cmp_t *cmp = image_load_compressed(name);
+    texture_list_t list = {.start = render_textures_len(), .len = cmp->len};
+
+    for (int i = 0; i < cmp->len; i++) {
+        image_t *image = image_load_from_bytes(cmp->entries[i], transparent);
+
+        render_texture_create(image->width, image->height, image->pixels);
+        mem_temp_free(image);
+    }
+
+    mem_temp_free(cmp);
+    return list;
+}
+
 texture_list_t image_get_compressed_textures(char *name) {
-	cmp_t *cmp = image_load_compressed(name);
-	texture_list_t list = {.start = render_textures_len(), .len = cmp->len};
+    return image_get_compressed_textures_internal(name, false);
+}
 
-	for (int i = 0; i < cmp->len; i++) {
-		image_t *image = image_load_from_bytes(cmp->entries[i], false);
-
-		// char png_name[1024] = {0};
-		// sprintf(png_name, "%s.%d.png", name, i);
-		// stbi_write_png(png_name, image->width, image->height, 4, image->pixels, 0);
-
-		render_texture_create(image->width, image->height, image->pixels);
-		mem_temp_free(image);
-	}
-
-	mem_temp_free(cmp);
-	return list;
+texture_list_t image_get_compressed_textures_semi_trans(char *name) {
+    return image_get_compressed_textures_internal(name, true);
 }
 
 uint16_t texture_from_list(texture_list_t tl, uint16_t index) {
