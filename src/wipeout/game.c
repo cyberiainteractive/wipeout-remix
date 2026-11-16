@@ -11,6 +11,7 @@
 #include "weapon.h"
 #include "droid.h"
 #include "hud.h"
+#include "taunt_hud.h"
 #include "sfx.h"
 #include "rumble.h"
 #include "ui.h"
