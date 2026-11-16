@@ -5,6 +5,8 @@
 #include "sfx.h"
 #include "game.h"
 
+#include <stdlib.h>
+
 #define QOA_IMPLEMENTATION
 #define QOA_NO_STDIO
 #include <qoa.h>
@@ -49,6 +51,8 @@ static const int32_t vag_tab[5][2] = {
 
 static sfx_data_t *sources;
 static uint32_t num_sources;
+static sfx_data_t *taunt_sources;
+static uint32_t num_taunts;
 static sfx_t *nodes;
 static music_decoder_t *music;
 static void (*external_mix_cb)(float *, uint32_t len) = NULL;
@@ -121,6 +125,52 @@ void sfx_load(void) {
 	platform_set_audio_mix_cb(sfx_stereo_mix);
 }
 
+// Taunt voice clips
+void sfx_taunt_load(const char **paths, uint32_t count) {
+	if (!paths || count == 0 || taunt_sources) {
+		return;
+	}
+
+	taunt_sources = mem_bump(count * sizeof(sfx_data_t));
+	num_taunts = 0;
+
+	for (uint32_t i = 0; i < count; i++) {
+		uint32_t file_size = 0;
+		uint8_t *file_data = platform_load_asset(paths[i], &file_size);
+		if (!file_data) {
+			printf("Could not load taunt: %s\n", paths[i]);
+			continue;
+		}
+
+		qoa_desc desc = {0};
+		int16_t *decoded = qoa_decode(file_data, file_size, &desc);
+		mem_temp_free(file_data);
+
+		if (!decoded || desc.samples == 0 || desc.channels == 0) {
+			printf("Could not decode taunt: %s\n", paths[i]);
+			free(decoded);
+			continue;
+		}
+
+		int16_t *samples = mem_bump(desc.samples * sizeof(int16_t));
+		for (uint32_t sample_index = 0; sample_index < desc.samples; sample_index++) {
+			int32_t mixed = 0;
+			for (uint32_t channel = 0; channel < desc.channels; channel++) {
+				mixed += decoded[sample_index * desc.channels + channel];
+			}
+			samples[sample_index] = (int16_t)(mixed / (int32_t)desc.channels);
+		}
+
+		free(decoded);
+
+		taunt_sources[num_taunts].samples = samples;
+		taunt_sources[num_taunts].len = desc.samples;
+		num_taunts++;
+	}
+
+	printf("Loaded %u taunt voice clips\n", num_taunts);
+}
+
 void sfx_reset(void) {
 	for (int i = 0; i < SFX_MAX; i++) {
 		if (flags_is(nodes[i].flags, SFX_LOOP)) {
@@ -147,12 +197,10 @@ void sfx_pause(void) {
 	}
 }
 
-
-
 // Sound effects
 
 sfx_t *sfx_get_node(sfx_source_t source_index) {
-	error_if(source_index < 0 || source_index > num_sources, "Invalid audio source");
+	error_if(source_index < 0 || (uint32_t)source_index >= num_sources + num_taunts, "Invalid audio source");
 
 	sfx_t *sfx = NULL;
 	for (int i = 0; i < SFX_MAX; i++) {
@@ -191,6 +239,20 @@ sfx_t *sfx_play(sfx_source_t source_index) {
 	sfx_t *sfx = sfx_get_node(source_index);
 	flags_set(sfx->flags, SFX_PLAY);
 	return sfx;
+}
+
+uint32_t sfx_taunt_count(void) {
+	return num_taunts;
+}
+
+void sfx_taunt_play(int index) {
+	if (index < 0 || (uint32_t)index >= num_taunts) {
+		return;
+	}
+
+	sfx_source_t source_index = (sfx_source_t)(num_sources + (uint32_t)index);
+	sfx_t *sfx = sfx_get_node(source_index);
+	flags_set(sfx->flags, SFX_PLAY);
 }
 
 sfx_t *sfx_play_at(sfx_source_t source_index, vec3_t pos, vec3_t vel, float volume) {
@@ -380,7 +442,13 @@ void sfx_stereo_mix(float *buffer, uint32_t len) {
 			sfx->current_volume = sfx->current_volume * 0.999 + sfx->volume * 0.001;
 			sfx->current_pan = sfx->current_pan * 0.999 + sfx->pan * 0.001;
 
-			sfx_data_t *source = &sources[sfx->source];
+			sfx_data_t *source;
+			if ((uint32_t)sfx->source < num_sources) {
+				source = &sources[sfx->source];
+			}
+			else {
+				source = &taunt_sources[(uint32_t)sfx->source - num_sources];
+			}
 			float sample = (float)source->samples[(int)sfx->position] / 32768.0;
 			left += sample * sfx->current_volume * clamp(1.0 - sfx->current_pan, 0, 1);
 			right += sample * sfx->current_volume * clamp(1.0 + sfx->current_pan, 0, 1);
