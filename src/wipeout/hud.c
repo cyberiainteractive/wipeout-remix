@@ -142,76 +142,170 @@ static void hud_draw_speedo(int speed, int thrust) {
 	render_push_2d(facia_pos, ui_scaled(render_texture_size(speedo_facia_texture)), rgba(128, 128, 128, 255), speedo_facia_texture);
 }
 
-static void hud_draw_xl_bar(vec2i_t pos, uint16_t texture, float fraction, rgba_t tint) {
-	int width = (int)(96.0f * fminf(fmaxf(fraction, 0.0f), 1.0f));
-	if (width <= 0) return;
 
-	pos = ui_scaled(pos);
+static void hud_draw_xl_bar(vec2i_t offset, uint16_t texture, float fraction, rgba_t tint) {
+    int width = (int)(96.0f * fminf(fmaxf(fraction, 0.0f), 1.0f));
+    if (width <= 0) return;
 
-	vec2i_t size = ui_scaled(vec2i(width, 22));
-	vec2i_t uv_size = vec2i(width, 22);
+    vec2i_t pos = ui_scaled_pos(
+        UI_POS_BOTTOM | UI_POS_RIGHT,
+        offset
+    );
 
-	render_push_2d_tile(pos, vec2i(0, 0), uv_size, size, tint, texture);
+    vec2i_t size = ui_scaled(vec2i(width, 22));
+    vec2i_t uv_size = vec2i(width, 22);
+
+    render_push_2d_tile(pos, vec2i(0, 0), uv_size, size, tint, texture);
 }
 
 static void hud_draw_xl(ship_t *ship) {
-	int display_lap = max(1, ship->lap + 1);
+    int display_lap = max(1, ship->lap + 1);
 
-	float speed_fraction = (ship->speed / 2166.0f) / 13.0f;
-	float thrust_fraction = (ship->thrust_mag / 65.0f) / 13.0f;
+    float speed_fraction = (ship->speed / 2166.0f) / 13.0f;
+    float thrust_fraction = (ship->thrust_mag / 65.0f) / 13.0f;
 
-	hud_draw_xl_bar(vec2i(218, 170), xl_thrust_bar_texture, speed_fraction, rgba(128, 128, 128, 255));
-	hud_draw_xl_bar(vec2i(218, 170), xl_thrust_bar_texture, thrust_fraction, rgba(128, 64, 64, 160));
-	hud_draw_xl_bar(vec2i(208, 198), xl_energy_bar_texture, 1.0f, rgba(128, 128, 128, 255));
+    hud_draw_xl_bar(
+        vec2i(-102, -48),
+        xl_thrust_bar_texture,
+        speed_fraction,
+        rgba(128, 128, 128, 255)
+    );
 
-	vec2i_t panel_pos = ui_scaled(vec2i(205, 161));
-	render_push_2d(panel_pos, ui_scaled(vec2i(112, 64)), rgba(128, 128, 128, 255), xl_speedo_panel_texture);
+    hud_draw_xl_bar(
+        vec2i(-102, -48),
+        xl_thrust_bar_texture,
+        thrust_fraction,
+        rgba(128, 64, 64, 160)
+    );
 
-	char lap_text[16];
-	snprintf(lap_text, sizeof(lap_text), "%d of %d", display_lap, NUM_LAPS);
+    hud_draw_xl_bar(
+        vec2i(-112, -42),
+        xl_energy_bar_texture,
+        1.0f,
+        rgba(128, 128, 128, 255)
+    );
 
-	ui_draw_text("LAP", ui_scaled(vec2i(258, 50)), UI_SIZE_8, UI_COLOR_DEFAULT);
-	ui_draw_text(lap_text, ui_scaled(vec2i(263, 60)), UI_SIZE_8, UI_COLOR_DEFAULT);
+    vec2i_t panel_pos = ui_scaled_pos(
+        UI_POS_BOTTOM | UI_POS_RIGHT,
+        vec2i(-115, -79)
+    );
 
-	if (g.race_type != RACE_TYPE_TIME_TRIAL) {
-		char pos_text[16];
-		snprintf(pos_text, sizeof(pos_text), "%d of %d", ship->position_rank, NUM_PILOTS);
+    render_push_2d(
+        panel_pos,
+        ui_scaled(vec2i(112, 64)),
+        rgba(128, 128, 128, 255),
+        xl_speedo_panel_texture
+    );
 
-		ui_draw_text("POS", ui_scaled(vec2i(258, 20)), UI_SIZE_8, UI_COLOR_DEFAULT);
-		ui_draw_text(pos_text, ui_scaled(vec2i(263, 30)), UI_SIZE_8, UI_COLOR_DEFAULT);
-	}
+    char lap_text[16];
+    snprintf(lap_text, sizeof(lap_text), "%d of %d", display_lap, NUM_LAPS);
 
-	if (ship->lap >= 0) {
-		ui_draw_time(ship->lap_time, ui_scaled(vec2i(16, 205)), UI_SIZE_8, UI_COLOR_DEFAULT);
+    ui_draw_text(
+        "LAP",
+        ui_scaled_pos(UI_POS_TOP | UI_POS_RIGHT, vec2i(-62, 50)),
+        UI_SIZE_8,
+        UI_COLOR_DEFAULT
+    );
 
-		for (int i = 0; i < ship->lap && i < NUM_LAPS - 1; i++) {
-			ui_draw_time(g.lap_times[ship->pilot][i], ui_scaled(vec2i(16, 215 - (10 * i))), UI_SIZE_8, UI_COLOR_ACCENT);
-		}
-	}
+    ui_draw_text(
+        lap_text,
+        ui_scaled_pos(UI_POS_TOP | UI_POS_RIGHT, vec2i(-57, 60)),
+        UI_SIZE_8,
+        UI_COLOR_DEFAULT
+    );
 
-	if (flags_not(ship->flags, SHIP_DIRECTION_FORWARD)) {
-		ui_draw_text_centered("WRONG WAY", ui_scaled_pos(UI_POS_MIDDLE | UI_POS_CENTER, vec2i(0, 0)), UI_SIZE_16, UI_COLOR_ACCENT);
-	}
+    if (g.race_type != RACE_TYPE_TIME_TRIAL) {
+        char pos_text[16];
+        snprintf(pos_text, sizeof(pos_text), "%d of %d", ship->position_rank, NUM_PILOTS);
 
-	if (ship->weapon_type != WEAPON_TYPE_NONE && ship->weapon_type - 1 < xl_weapon_icon_textures.len) {
-		uint16_t icon = texture_from_list(xl_weapon_icon_textures, ship->weapon_type - 1);
-		render_push_2d(ui_scaled(vec2i(153, 25)), ui_scaled(vec2i(32, 35)), rgba(128, 128, 128, 255), icon);
-	}
+        ui_draw_text(
+            "POS",
+            ui_scaled_pos(UI_POS_TOP | UI_POS_RIGHT, vec2i(-62, 20)),
+            UI_SIZE_8,
+            UI_COLOR_DEFAULT
+        );
 
-	if (ship->weapon_target) {
-		vec3_t projected = render_transform(ship->weapon_target->position);
-		vec2i_t screen_size = render_size();
-		vec2i_t size = ui_scaled(render_texture_size(xl_target_reticle));
+        ui_draw_text(
+            pos_text,
+            ui_scaled_pos(UI_POS_TOP | UI_POS_RIGHT, vec2i(-57, 30)),
+            UI_SIZE_8,
+            UI_COLOR_DEFAULT
+        );
+    }
 
-		if (projected.x >= -1 && projected.x <= 1 && projected.y >= -1 && projected.y <= 1 && projected.z < 1) {
-			vec2i_t pos = vec2i(
-				((projected.x + 1.0f) / 2.0f) * screen_size.x - size.x / 2,
-				((-projected.y + 1.0f) / 2.0f) * screen_size.y - size.y / 2
-			);
+    if (ship->lap >= 0) {
+        ui_draw_time(
+            ship->lap_time,
+            ui_scaled_pos(UI_POS_BOTTOM | UI_POS_LEFT, vec2i(16, -35)),
+            UI_SIZE_8,
+            UI_COLOR_DEFAULT
+        );
 
-			render_push_2d(pos, size, rgba(128, 128, 128, 128), xl_target_reticle);
-		}
-	}
+        for (int i = 0; i < ship->lap && i < NUM_LAPS - 1; i++) {
+            ui_draw_time(
+                g.lap_times[ship->pilot][i],
+                ui_scaled_pos(
+                    UI_POS_BOTTOM | UI_POS_LEFT,
+                    vec2i(16, -25 + (10 * i))
+                ),
+                UI_SIZE_8,
+                UI_COLOR_ACCENT
+            );
+        }
+    }
+
+    if (flags_not(ship->flags, SHIP_DIRECTION_FORWARD)) {
+        ui_draw_text_centered(
+            "WRONG WAY",
+            ui_scaled_pos(UI_POS_MIDDLE | UI_POS_CENTER, vec2i(0, 0)),
+            UI_SIZE_16,
+            UI_COLOR_ACCENT
+        );
+    }
+
+    if (ship->weapon_type != WEAPON_TYPE_NONE &&
+        ship->weapon_type - 1 < xl_weapon_icon_textures.len) {
+
+        uint16_t icon = texture_from_list(
+            xl_weapon_icon_textures,
+            ship->weapon_type - 1
+        );
+
+        vec2i_t pos = ui_scaled_pos(
+            UI_POS_TOP | UI_POS_CENTER,
+            vec2i(-7, 25)
+        );
+
+        render_push_2d(
+            pos,
+            ui_scaled(vec2i(32, 35)),
+            rgba(128, 128, 128, 255),
+            icon
+        );
+    }
+
+    if (ship->weapon_target) {
+        vec3_t projected = render_transform(ship->weapon_target->position);
+        vec2i_t screen_size = render_size();
+        vec2i_t size = ui_scaled(render_texture_size(xl_target_reticle));
+
+        if (projected.x >= -1 && projected.x <= 1 &&
+            projected.y >= -1 && projected.y <= 1 &&
+            projected.z < 1) {
+
+            vec2i_t pos = vec2i(
+                ((projected.x + 1.0f) / 2.0f) * screen_size.x - size.x / 2,
+                ((-projected.y + 1.0f) / 2.0f) * screen_size.y - size.y / 2
+            );
+
+            render_push_2d(
+                pos,
+                size,
+                rgba(128, 128, 128, 128),
+                xl_target_reticle
+            );
+        }
+    }
 }
 
 static void hud_draw_target_icon(vec3_t position) {
