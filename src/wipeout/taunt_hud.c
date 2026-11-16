@@ -1,3 +1,4 @@
+
 #include "../types.h"
 #include "../render.h"
 
@@ -9,9 +10,14 @@
 
 static texture_list_t pilot_portraits[NUM_PILOTS];
 
-#define TAUNT_HUD_WIDTH  156
-#define TAUNT_HUD_HEIGHT 44
-#define TAUNT_HUD_AVATAR_SIZE 32
+#define TAUNT_HUD_WIDTH        156
+#define TAUNT_HUD_HEIGHT       44
+#define TAUNT_HUD_AVATAR_SIZE  32
+
+static vec2i_t taunt_hud_add(vec2i_t a, vec2i_t b)
+{
+    return vec2i(a.x + b.x, a.y + b.y);
+}
 
 void taunt_hud_load(void)
 {
@@ -31,7 +37,10 @@ void taunt_hud_draw(void)
 
     vec2i_t pos = ui_scaled_pos(
         UI_POS_MIDDLE | UI_POS_RIGHT,
-        vec2i(-TAUNT_HUD_WIDTH - 8, -TAUNT_HUD_HEIGHT / 2)
+        vec2i(
+            -TAUNT_HUD_WIDTH - 8,
+            -TAUNT_HUD_HEIGHT / 2
+        )
     );
 
     vec2i_t panel_size = ui_scaled(
@@ -50,22 +59,24 @@ void taunt_hud_draw(void)
         1
     );
 
-    vec2i_t avatar_pos = vec2i_add(
+    vec2i_t avatar_pos = taunt_hud_add(
         pos,
         ui_scaled(vec2i(4, 6))
     );
 
     render_push_2d(
         avatar_pos,
-        ui_scaled(vec2i(
-            TAUNT_HUD_AVATAR_SIZE,
-            TAUNT_HUD_AVATAR_SIZE
-        )),
+        ui_scaled(
+            vec2i(
+                TAUNT_HUD_AVATAR_SIZE,
+                TAUNT_HUD_AVATAR_SIZE
+            )
+        ),
         rgba(255, 255, 255, 255),
         portrait
     );
 
-    vec2i_t text_pos = vec2i_add(
+    vec2i_t text_pos = taunt_hud_add(
         pos,
         ui_scaled(vec2i(42, 11))
     );
