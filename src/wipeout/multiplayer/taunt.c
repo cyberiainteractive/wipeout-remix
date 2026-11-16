@@ -31,8 +31,11 @@ void taunt_update(void)
     }
 
     if (input_pressed(A_TAUNT)) {
-        sfx_taunt_play_random();
+    uint32_t count = sfx_taunt_count();
 
+    if (count > 0) {
+        sfx_taunt_play(rand_int(0, count));
+    }
         hit_confirmed = 0;
         cooldown = TAUNT_COOLDOWN_FRAMES;
     }
