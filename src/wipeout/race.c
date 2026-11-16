@@ -4,6 +4,7 @@
 #include "../render.h"
 #include "../platform.h"
 #include "multiplayer/taunt.h"
+#include "taunt_hud.h"
 
 #include "track.h"
 #include "ship.h"
@@ -148,6 +149,7 @@ void race_update(void) {
 
 	if (flags_is(g.ships[g.pilot].flags, SHIP_RACING)) {
 		hud_draw(&g.ships[g.pilot]);
+		taunt_hud_draw();
 		if (save.minimap == 1) {
 			map_draw(&g.track, g.ships, len(g.ships), g.pilot);
 		}
