@@ -1,6 +1,6 @@
 #include "taunt.h"
 #include "../sfx.h"
-#include "../input.h"
+#include "../../input.h"
 
 #define TAUNT_COOLDOWN_FRAMES  180
 
