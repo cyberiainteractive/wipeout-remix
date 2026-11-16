@@ -52,11 +52,11 @@ void hud_load(void) {
 	target_reticle = image_get_texture_semi_trans("wipeout/textures/target2.tim");
 	weapon_icon_textures = image_get_compressed_textures("wipeout/common/wicons.cmp");
 
-	xl_speedo_panel_texture = image_get_texture("wipeout2/textures/SPBILE2.TIM");
-	xl_energy_bar_texture = image_get_texture("wipeout2/textures/ENERGY.TIM");
-	xl_thrust_bar_texture = image_get_texture("wipeout2/textures/THRUST.TIM");
+	xl_speedo_panel_texture = image_get_texture_semi_trans("wipeout2/textures/SPBILE2.TIM");
+	xl_energy_bar_texture = image_get_texture_semi_trans("wipeout2/textures/ENERGY.TIM");
+	xl_thrust_bar_texture = image_get_texture_semi_trans("wipeout2/textures/THRUST.TIM");
 	xl_target_reticle = image_get_texture_semi_trans("wipeout2/textures/TARGET2.TIM");
-	xl_weapon_icon_textures = image_get_compressed_textures("wipeout2/textures/WEPICON.CMP");
+	xl_weapon_icon_textures = image_get_compressed_textures_semi_trans("wipeout2/textures/WEPICON.CMP");
 }
 static void hud_draw_speedo_bar(vec2i_t *pos, const speedo_bar_t *a, const speedo_bar_t *b, float f, rgba_t color_override) {
 	rgba_t left_color, right_color;
@@ -97,7 +97,6 @@ static void hud_draw_speedo_bar(vec2i_t *pos, const speedo_bar_t *a, const speed
 		}
 	}, RENDER_NO_TEXTURE);
 }
-
 static void hud_draw_speedo_bars(vec2i_t *pos, float f, rgba_t color_override) {
 	if (f <= 0) return;
 	if (f - floor(f) > 0.9) f = ceilf(f);
@@ -135,11 +134,12 @@ static void hud_draw_xl(ship_t *ship) {
 	float speed_fraction = (ship->speed / 2166.0f) / 13.0f;
 	float thrust_fraction = (ship->thrust_mag / 65.0f) / 13.0f;
 
-	vec2i_t panel_pos = ui_scaled(vec2i(205, 161));
-	render_push_2d(panel_pos, ui_scaled(vec2i(112, 64)), rgba(128, 128, 128, 255), xl_speedo_panel_texture);
 	hud_draw_xl_bar(vec2i(218, 170), xl_thrust_bar_texture, speed_fraction, rgba(128, 128, 128, 255));
 	hud_draw_xl_bar(vec2i(218, 170), xl_thrust_bar_texture, thrust_fraction, rgba(128, 64, 64, 160));
-	hud_draw_xl_bar(vec2i(218, 198), xl_energy_bar_texture, 1.0f, rgba(128, 128, 128, 255));
+	hud_draw_xl_bar(vec2i(208, 198), xl_energy_bar_texture, 1.0f, rgba(128, 128, 128, 255));
+
+	vec2i_t panel_pos = ui_scaled(vec2i(205, 161));
+	render_push_2d(panel_pos, ui_scaled(vec2i(112, 64)), rgba(128, 128, 128, 255), xl_speedo_panel_texture);
 
 	ui_draw_text("LAP", ui_scaled(vec2i(258, 50)), UI_SIZE_8, UI_COLOR_DEFAULT);
 	ui_draw_number(display_lap, ui_scaled(vec2i(263, 60)), UI_SIZE_16, UI_COLOR_DEFAULT);
@@ -155,7 +155,7 @@ static void hud_draw_xl(ship_t *ship) {
 	if (ship->lap >= 0) {
 		ui_draw_time(ship->lap_time, ui_scaled(vec2i(16, 205)), UI_SIZE_8, UI_COLOR_DEFAULT);
 		for (int i = 0; i < ship->lap && i < NUM_LAPS - 1; i++) {
-			ui_draw_time(g.lap_times[ship->pilot][i], ui_scaled(vec2i(16, 215 + (10 * i))), UI_SIZE_8, UI_COLOR_ACCENT);
+			ui_draw_time(g.lap_times[ship->pilot][i], ui_scaled(vec2i(16, 215 - (10 * i))), UI_SIZE_8, UI_COLOR_ACCENT);
 		}
 	}
 
