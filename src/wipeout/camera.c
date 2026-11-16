@@ -67,45 +67,77 @@ void camera_update_race_external(camera_t *camera, ship_t *ship, droid_t *droid)
 	camera->angle = vec3_mul(ship->angle, vec3(1,1,0));
 }
 
+
 void camera_update_race_external_freecam(camera_t *camera, ship_t *ship, droid_t *droid) {
-    float orbit_distance = 1100.0f;
-    float base_height = -180.0f;
+	float orbit_distance = 1100.0f;
+	float base_height = -180.0f;
 
-    static float stick_yaw_offset = 0.0f;
-    bool stick_active = false;
+	static float stick_yaw_offset = 0.0f;
 
-    float rs_left  = input_state(A_LOOKLEFT);
-    float rs_right = input_state(A_LOOKRIGHT);
+	bool stick_active = false;
 
-    float rs_x = rs_right - rs_left;
+	float rs_left = input_state(A_LOOKLEFT);
+	float rs_right = input_state(A_LOOKRIGHT);
+	float rs_x = rs_right - rs_left;
 
-    // Invert left and right if camera_invert_x is enabled
-    if (save.camera_invert_x == 1) {
-        rs_x = -rs_x;
-    }
+	// Invert left and right if camera_invert_x is enabled
+	if (save.camera_invert_x == 1) {
+		rs_x = -rs_x;
+	}
 
-    if (rs_x < -0.15f || rs_x > 0.15f) {
-        stick_yaw_offset -= rs_x * 0.04f;
-        stick_active = true;
-    }
+	if (rs_x < -0.15f || rs_x > 0.15f) {
+		stick_yaw_offset -= rs_x * 0.04f;
+		stick_active = true;
+	}
 
-    if (!stick_active) {
-        stick_yaw_offset += (0.0f - stick_yaw_offset) * 0.1f;
-    }
+	if (!stick_active) {
+		stick_yaw_offset += (0.0f - stick_yaw_offset) * 0.1f;
+	}
 
-    float combined_yaw = ship->angle.y + stick_yaw_offset;
+	float combined_yaw = ship->angle.y + stick_yaw_offset;
 
-    vec3_t desired_pos = vec3_add(ship->position, vec3(
-        sinf(combined_yaw) * orbit_distance,
-        base_height,
-        -cosf(combined_yaw) * orbit_distance
-    ));
+	vec3_t pos = vec3_add(ship->position, vec3(
+		sinf(combined_yaw) * orbit_distance,
+		base_height,
+		-cosf(combined_yaw) * orbit_distance
+	));
 
-    vec3_t diff = vec3_sub(desired_pos, camera->position);
-    camera->velocity = vec3_mulf(diff, 0.4f); // Direct interpolation prevents rubber-banding
-    camera->position = vec3_add(camera->position, camera->velocity);
-    
-    camera_look_at_point(camera, ship->position);
+	camera->section = track_nearest_section(
+		pos,
+		vec3(1, 1, 1),
+		camera->section,
+		NULL
+	);
+
+	section_t *next = camera->section->next;
+
+	vec3_t target = vec3_project_to_ray(
+		pos,
+		next->center,
+		camera->section->center
+	);
+
+	vec3_t diff_from_center = vec3_sub(pos, target);
+
+	vec3_t acc = diff_from_center;
+
+	acc.y += vec3_len(diff_from_center) * 0.5f;
+
+	camera->velocity = vec3_sub(
+		camera->velocity,
+		vec3_mulf(acc, 0.015625f * 30 * system_tick())
+	);
+
+	camera->velocity = vec3_sub(
+		camera->velocity,
+		vec3_mulf(camera->velocity, 0.125f * 30 * system_tick())
+	);
+
+	pos = vec3_add(pos, camera->velocity);
+
+	camera->position = pos;
+
+	camera_look_at_point(camera, ship->position);
 }
 
 void camera_update_race_rear(camera_t *camera, ship_t *ship, droid_t *droid) {
