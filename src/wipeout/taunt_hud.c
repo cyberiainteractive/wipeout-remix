@@ -11,8 +11,10 @@
 static texture_list_t pilot_portraits[NUM_PILOTS];
 
 #define TAUNT_HUD_WIDTH        64
-#define TAUNT_HUD_HEIGHT       18
-#define TAUNT_HUD_AVATAR_SIZE  12
+#define TAUNT_HUD_HEIGHT       24
+#define TAUNT_HUD_AVATAR_SIZE  16
+
+#define TAUNT_HUD_TEXT_SIZE    UI_SIZE_4
 
 void taunt_hud_load(void)
 {
@@ -32,10 +34,14 @@ void taunt_hud_draw(void)
 
     const char *name = def.pilots[pilot].name;
 
-    int name_width = ui_text_width(name, UI_SIZE_8);
+    int name_width = ui_text_width(name, TAUNT_HUD_TEXT_SIZE);
+
+    int text_offset = 23;
+    int padding = 5;
+
     int hud_width = max(
         TAUNT_HUD_WIDTH,
-        21 + name_width / 2 + 4
+        text_offset + name_width + padding
     );
 
     vec2i_t pos = ui_scaled_pos(
@@ -63,7 +69,7 @@ void taunt_hud_draw(void)
         UI_POS_MIDDLE | UI_POS_RIGHT,
         vec2i(
             -hud_width - 4 + 2,
-            -TAUNT_HUD_HEIGHT / 2 + 3
+            -TAUNT_HUD_HEIGHT / 2 + 4
         )
     );
 
@@ -84,7 +90,7 @@ void taunt_hud_draw(void)
     vec2i_t label_pos = ui_scaled_pos(
         UI_POS_MIDDLE | UI_POS_RIGHT,
         vec2i(
-            -hud_width - 4 + 21,
+            -hud_width - 4 + text_offset,
             -TAUNT_HUD_HEIGHT / 2 + 5
         )
     );
@@ -92,22 +98,22 @@ void taunt_hud_draw(void)
     ui_draw_text(
         "VOICE COMM",
         label_pos,
-        UI_SIZE_8,
+        TAUNT_HUD_TEXT_SIZE,
         UI_COLOR_ACCENT
     );
 
     vec2i_t name_pos = ui_scaled_pos(
         UI_POS_MIDDLE | UI_POS_RIGHT,
         vec2i(
-            -hud_width - 4 + 21,
-            -TAUNT_HUD_HEIGHT / 2 + 12
+            -hud_width - 4 + text_offset,
+            -TAUNT_HUD_HEIGHT / 2 + 13
         )
     );
 
     ui_draw_text(
         name,
         name_pos,
-        UI_SIZE_8,
+        TAUNT_HUD_TEXT_SIZE,
         UI_COLOR_DEFAULT
     );
 }
