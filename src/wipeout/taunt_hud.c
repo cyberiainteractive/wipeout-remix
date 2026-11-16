@@ -82,7 +82,7 @@ void taunt_hud_draw(void)
     );
 
     ui_draw_text(
-        "TAUNT",
+        "VOICE COMM",
         text_pos,
         UI_SIZE_8,
         UI_COLOR_ACCENT
