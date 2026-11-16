@@ -122,6 +122,11 @@ void sfx_load(void) {
 	}
 
 	mem_temp_free(vb);
+
+	static const char *taunt_paths[] = {
+		"wipeout/sound/taunts/taunt01.qoa",	};
+	sfx_taunt_load(taunt_paths, sizeof(taunt_paths) / sizeof(taunt_paths[0]));
+
 	platform_set_audio_mix_cb(sfx_stereo_mix);
 }
 
