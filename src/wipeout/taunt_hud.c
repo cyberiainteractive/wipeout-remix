@@ -8,7 +8,7 @@
 #include "image.h"
 #include "ui.h"
 
-static texture_list_t pilot_portraits;
+static texture_list_t pilot_portraits[NUM_PILOTS];
 
 #define TAUNT_HUD_WIDTH        156
 #define TAUNT_HUD_HEIGHT       44
