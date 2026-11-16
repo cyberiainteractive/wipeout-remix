@@ -278,7 +278,7 @@ ship_t *weapon_collides_with_ship(weapon_t *self) {
 				vec3_t velocity = vec3_add(base_vel, vec3_rand(512));
 				particles_spawn(self->position, self->ship_hit_particle, velocity, 256);
 			}
-			taunt_on_weapon_hit();
+//			taunt_on_weapon_hit();
 			return ship;
 		}
 	}
