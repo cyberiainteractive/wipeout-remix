@@ -995,6 +995,7 @@ void game_init(void) {
 	input_bind(INPUT_LAYER_SYSTEM, INPUT_GAMEPAD_START, A_MENU_START);
 
 	input_bind(INPUT_LAYER_SYSTEM, INPUT_KEY_T, A_TAUNT);
+	input_bind(INPUT_LAYER_SYSTEM, INPUT_GAMEPAD_B, A_TAUNT);
 	
 
 	// User defined, loaded from the save struct
