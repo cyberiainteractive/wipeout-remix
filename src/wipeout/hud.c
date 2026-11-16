@@ -165,14 +165,14 @@ static void hud_draw_xl(ship_t *ship) {
     float thrust_fraction = (ship->thrust_mag / 65.0f) / 13.0f;
 
     hud_draw_xl_bar(
-        vec2i(-102, -48),
+        vec2i(-102, -70),
         xl_thrust_bar_texture,
         speed_fraction,
         rgba(128, 128, 128, 255)
     );
 
     hud_draw_xl_bar(
-        vec2i(-102, -48),
+        vec2i(-102, -70),
         xl_thrust_bar_texture,
         thrust_fraction,
         rgba(128, 64, 64, 160)
