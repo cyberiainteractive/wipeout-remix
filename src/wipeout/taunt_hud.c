@@ -47,8 +47,8 @@ void taunt_hud_draw(void)
     );
 
     uint16_t portrait = texture_from_list(
-        pilot_portraits,
-        pilot
+        pilot_portraits[pilot],
+        1
     );
 
     vec2i_t avatar_pos = ui_scaled_pos(
