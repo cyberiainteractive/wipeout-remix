@@ -122,6 +122,7 @@ COMMON_SRC = \
 	src/wipeout/droid.c \
 	src/wipeout/ui.c \
 	src/wipeout/hud.c \
+	src/wipeout/taunt_hud.c \
 	src/wipeout/image.c \
 	src/wipeout/game.c \
 	src/wipeout/menu.c \
