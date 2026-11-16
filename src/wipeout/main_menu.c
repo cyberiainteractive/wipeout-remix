@@ -527,6 +527,18 @@ static void toggle_sfx_volume(menu_t *menu, int data) {
 	save.is_dirty = true;
 }
 
+static void toggle_taunts(menu_t *menu, int data) {
+	save.taunts_enabled = data;
+	save.is_dirty = true;
+}
+
+static void toggle_taunt_voice(menu_t *menu, int data) {
+	save.taunt_voice = data;
+	save.is_dirty = true;
+}
+
+static const char *opts_taunts[] = {"ON", "OFF"};
+static const char *opts_taunt_voice[] = {"FEMALE", "MALE"};
 static const char *opts_volume[] = {"0", "10", "20", "30", "40", "50", "60", "70", "80", "90", "100"};
 
 static void page_options_audio_init(menu_t *menu) {
@@ -541,6 +553,8 @@ static void page_options_audio_init(menu_t *menu) {
 
 	menu_page_add_toggle(page, save.music_volume * 10, "MUSIC VOLUME", opts_volume, len(opts_volume), toggle_music_volume);
 	menu_page_add_toggle(page, save.sfx_volume * 10, "SOUND EFFECTS VOLUME", opts_volume, len(opts_volume), toggle_sfx_volume);
+	menu_page_add_toggle(page, save.taunts_enabled * 10, "TAUNTS", opts_taunts, len(opts_taunts), toggle_taunts);
+	menu_page_add_toggle(page, save.taunt_voice * 10, "VOICE STYLE", opts_taunt_voice, len(opts_taunt_voice), toggle_taunt_voice);
 }
 
 // -----------------------------------------------------------------------------
