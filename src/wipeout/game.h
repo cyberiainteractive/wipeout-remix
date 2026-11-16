@@ -42,6 +42,7 @@ typedef enum {
 	A_LOOKLEFT, // Modern control update
 	A_LOOKRIGHT, // Modern control update
 	A_LOOKBACK, // Modern control update
+	A_TAUNT, // Modern control update
 	NUM_GAME_ACTIONS,
 
 	A_MENU_UP,
