@@ -141,17 +141,17 @@ static void hud_draw_xl(ship_t *ship) {
 	vec2i_t panel_pos = ui_scaled(vec2i(205, 161));
 	render_push_2d(panel_pos, ui_scaled(vec2i(112, 64)), rgba(128, 128, 128, 255), xl_speedo_panel_texture);
 
-	ui_draw_text("LAP", ui_scaled(vec2i(258, 50)), UI_SIZE_8, UI_COLOR_DEFAULT);
-	ui_draw_number(display_lap, ui_scaled(vec2i(263, 60)), UI_SIZE_16, UI_COLOR_DEFAULT);
-	ui_draw_text("OF", ui_scaled(vec2i(263, 68)), UI_SIZE_8, UI_COLOR_DEFAULT);
-	ui_draw_number(NUM_LAPS, ui_scaled(vec2i(285, 60)), UI_SIZE_16, UI_COLOR_DEFAULT);
-	if (g.race_type != RACE_TYPE_TIME_TRIAL) {
-		ui_draw_text("POS", ui_scaled(vec2i(258, 20)), UI_SIZE_8, UI_COLOR_DEFAULT);
-		ui_draw_number(ship->position_rank, ui_scaled(vec2i(263, 30)), UI_SIZE_16, UI_COLOR_DEFAULT);
-		ui_draw_text("OF", ui_scaled(vec2i(263, 38)), UI_SIZE_8, UI_COLOR_DEFAULT);
-		ui_draw_number(NUM_PILOTS, ui_scaled(vec2i(285, 30)), UI_SIZE_16, UI_COLOR_DEFAULT);
-	}
+	ui_draw_text("LAP", ui_scaled(vec2i(129, 25)), UI_SIZE_8, UI_COLOR_DEFAULT);
+	ui_draw_number(display_lap, ui_scaled(vec2i(132, 30)), UI_SIZE_8, UI_COLOR_DEFAULT);
+	ui_draw_text("OF", ui_scaled(vec2i(132, 34)), UI_SIZE_8, UI_COLOR_DEFAULT);
+	ui_draw_number(NUM_LAPS, ui_scaled(vec2i(143, 30)), UI_SIZE_8, UI_COLOR_DEFAULT);
 
+	if (g.race_type != RACE_TYPE_TIME_TRIAL) {
+	    ui_draw_text("POS", ui_scaled(vec2i(129, 10)), UI_SIZE_8, UI_COLOR_DEFAULT);
+	    ui_draw_number(ship->position_rank, ui_scaled(vec2i(132, 15)), UI_SIZE_8, UI_COLOR_DEFAULT);
+	    ui_draw_text("OF", ui_scaled(vec2i(132, 19)), UI_SIZE_8, UI_COLOR_DEFAULT);
+	    ui_draw_number(NUM_PILOTS, ui_scaled(vec2i(143, 15)), UI_SIZE_8, UI_COLOR_DEFAULT);
+	}
 	if (ship->lap >= 0) {
 		ui_draw_time(ship->lap_time, ui_scaled(vec2i(16, 205)), UI_SIZE_8, UI_COLOR_DEFAULT);
 		for (int i = 0; i < ship->lap && i < NUM_LAPS - 1; i++) {
