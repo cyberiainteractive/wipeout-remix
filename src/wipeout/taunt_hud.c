@@ -10,9 +10,9 @@
 
 static texture_list_t pilot_portraits[NUM_PILOTS];
 
-#define TAUNT_HUD_WIDTH        156
-#define TAUNT_HUD_HEIGHT       44
-#define TAUNT_HUD_AVATAR_SIZE  32
+#define TAUNT_HUD_WIDTH        128
+#define TAUNT_HUD_HEIGHT       36
+#define TAUNT_HUD_AVATAR_SIZE  24
 
 void taunt_hud_load(void)
 {
@@ -30,13 +30,18 @@ void taunt_hud_draw(void)
         return;
     }
 
+    const char *name = def.pilots[pilot].name;
+
+    int name_width = ui_text_width(name, UI_SIZE_8);
+    int hud_width = max(TAUNT_HUD_WIDTH, 42 + name_width + 8);
+
     vec2i_t pos = ui_scaled_pos(
         UI_POS_MIDDLE | UI_POS_RIGHT,
-        vec2i(-TAUNT_HUD_WIDTH - 8, -TAUNT_HUD_HEIGHT / 2)
+        vec2i(-hud_width - 8, -TAUNT_HUD_HEIGHT / 2)
     );
 
     vec2i_t panel_size = ui_scaled(
-        vec2i(TAUNT_HUD_WIDTH, TAUNT_HUD_HEIGHT)
+        vec2i(hud_width, TAUNT_HUD_HEIGHT)
     );
 
     render_push_2d(
@@ -53,10 +58,7 @@ void taunt_hud_draw(void)
 
     vec2i_t avatar_pos = ui_scaled_pos(
         UI_POS_MIDDLE | UI_POS_RIGHT,
-        vec2i(
-            -TAUNT_HUD_WIDTH - 8 + 4,
-            -TAUNT_HUD_HEIGHT / 2 + 6
-        )
+        vec2i(-hud_width - 8 + 4, -TAUNT_HUD_HEIGHT / 2 + 6)
     );
 
     vec2i_t avatar_size = ui_scaled(
@@ -72,10 +74,7 @@ void taunt_hud_draw(void)
 
     vec2i_t label_pos = ui_scaled_pos(
         UI_POS_MIDDLE | UI_POS_RIGHT,
-        vec2i(
-            -TAUNT_HUD_WIDTH - 8 + 42,
-            -TAUNT_HUD_HEIGHT / 2 + 11
-        )
+        vec2i(-hud_width - 8 + 42, -TAUNT_HUD_HEIGHT / 2 + 11)
     );
 
     ui_draw_text(
@@ -87,14 +86,11 @@ void taunt_hud_draw(void)
 
     vec2i_t name_pos = ui_scaled_pos(
         UI_POS_MIDDLE | UI_POS_RIGHT,
-        vec2i(
-            -TAUNT_HUD_WIDTH - 8 + 42,
-            -TAUNT_HUD_HEIGHT / 2 + 23
-        )
+        vec2i(-hud_width - 8 + 42, -TAUNT_HUD_HEIGHT / 2 + 23)
     );
 
     ui_draw_text(
-        def.pilots[pilot].name,
+        name,
         name_pos,
         UI_SIZE_8,
         UI_COLOR_DEFAULT
