@@ -45,9 +45,24 @@ const struct {
 static uint16_t speedo_facia_texture;
 
 void hud_load(void) {
-	speedo_facia_texture = image_get_texture("wipeout/textures/speedo.tim");
-	target_reticle = image_get_texture_semi_trans("wipeout/textures/target2.tim");
-	weapon_icon_textures = image_get_compressed_textures("wipeout/common/wicons.cmp");
+    if (save.hud_style == 1) {
+        target_reticle = image_get_texture_semi_trans(
+            "wipeout2/textures/TARGET2.TIM"
+        );
+
+        weapon_icon_textures = image_get_compressed_textures(
+            "wipeout2/textures/WEPICON.CMP"
+        );
+    }
+    else {
+        target_reticle = image_get_texture_semi_trans(
+            "wipeout/textures/target2.tim"
+        );
+
+        weapon_icon_textures = image_get_compressed_textures(
+            "wipeout/common/wicons.cmp"
+        );
+    }
 }
 
 static void hud_draw_speedo_bar(vec2i_t *pos, const speedo_bar_t *a, const speedo_bar_t *b, float f, rgba_t color_override) {
