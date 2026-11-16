@@ -11,6 +11,7 @@ Originally this started as a modification of wipeout-rewrite for wipEoutX, an Xb
 # Working:
 - [x] Modernized SDL3 backend which handles window rendering, audio, and input (controller + keyboard/mouse)
 - [x] Modified menu assets for ease of navigation, including bugfixes
+- [x] WO2-style HUD if game files are installed
 - [x] Texture filtering options (off for classic pixelated textures, on for smoother textures)
 - [x] Wipeout XL/2097 + 64 track support in single races (requires track data from Wipeout XL/2097 + Wipeout 64)
 - [x] Wipeout XL/2097 + 3 + 64 soundtrack support (requires converted soundtrack files from Wipeout XL/2097 + Wipeout 64 using qoaconv)
@@ -26,7 +27,6 @@ Originally this started as a modification of wipeout-rewrite for wipEoutX, an Xb
 
 # Planned:
 - [ ] 2-4 player splitscreen (2P support is ready in Mayo1970's fork, just need to merge those changes into mainline)
-- [ ] WO2-style HUD if game files are installed(?)
 - [ ] WO3 track conversion utility(?)
 - [ ] FOV change during speed boost
 - [ ] Demo builds(?)
