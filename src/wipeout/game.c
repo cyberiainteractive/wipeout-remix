@@ -939,6 +939,7 @@ void game_init(void) {
 	ui_load();
 	sfx_load();
 	hud_load();
+	taunt_hud_load();
 	ships_load();
 	droid_load();
 	particles_load();
