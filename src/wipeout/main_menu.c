@@ -58,7 +58,12 @@ static void button_start_game(menu_t *menu, int data) {
 }
 
 static void button_start_multiplayer_game(menu_t *menu, int data) {
-	page_race_class_init(menu);
+}
+
+static void button_system_link(menu_t *menu, int data) {
+}
+
+static void button_local_multiplayer(menu_t *menu, int data) {
 }
 
 static void button_options(menu_t *menu, int data) {
@@ -109,7 +114,16 @@ static void page_main_init(menu_t *menu) {
 	#endif
 }
 
-
+static void page_multiplayer_init(menu_t *menu) {
+	menu_page_t *page = menu_push(menu, "MULTIPLAYER", page_options_draw);
+	flags_add(page->layout_flags, MENU_FIXED);
+	page->title_pos = vec2i(0, 30);
+	page->title_anchor = UI_POS_TOP | UI_POS_CENTER;
+	page->items_pos = vec2i(0, -110);
+	page->items_anchor = UI_POS_BOTTOM | UI_POS_CENTER;
+	menu_page_add_button(page, 0, "LOCAL", button_local_multiplayer);
+	menu_page_add_button(page, 1, "SYSTEM LINK", button_system_link);
+}
 
 // -----------------------------------------------------------------------------
 // Options
