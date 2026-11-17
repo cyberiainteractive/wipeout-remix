@@ -561,6 +561,7 @@ void ship_resolve_wing_collision(ship_t *self, track_face_t *face, float directi
 	if (self->last_impact_time > 0.2) {
 		self->last_impact_time = 0;
 		sfx_play_at(SFX_IMPACT, wing_pos, vec3(0, 0, 0), 1);
+		if (self->pilot == g.pilot) rumble_impulse(fminf(fmaxf(self->speed / 28000.0f, 0.3f), 1.0f), 0.25f);
 	}
 }
 
@@ -586,6 +587,7 @@ void ship_resolve_nose_collision(ship_t *self, track_face_t *face, float directi
 	if (self->last_impact_time > 0.2) {
 		self->last_impact_time = 0;
 		sfx_play_at(SFX_IMPACT, ship_nose(self), vec3(0, 0, 0), 1);
+		if (self->pilot == g.pilot) rumble_impulse(fminf(fmaxf(self->speed / 28000.0f, 0.3f), 1.0f), 0.25f);
 	}
 }
 
@@ -898,6 +900,7 @@ void ship_collide_with_ship(ship_t *self, ship_t *other) {
 		self->last_impact_time = 0;
 		vec3_t sound_pos = vec3_mulf(vec3_add(self->position, other->position), 0.5);
 		sfx_play_at(SFX_CRUNCH, sound_pos, vec3(0, 0, 0), 1);
+		if (self->pilot == g.pilot || other->pilot == g.pilot) rumble_impulse(0.7f, 0.3f);
 	}
 	flags_add(self->flags, SHIP_COLL);
 	flags_add(other->flags, SHIP_COLL);
