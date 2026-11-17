@@ -23,6 +23,7 @@ static void page_options_video_init(menu_t *menu);
 static void page_options_vr_init(menu_t *menu);
 static void page_options_audio_init(menu_t *menu);
 static void page_options_highscores_init(menu_t *menu);
+static void page_multiplayer_init(menu_t *menu);
 
 static uint16_t background;
 static texture_list_t track_images;
