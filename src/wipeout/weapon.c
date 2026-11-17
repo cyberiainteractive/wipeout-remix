@@ -383,7 +383,7 @@ void weapon_update_mine(weapon_t *self) {
         sfx_play_at(SFX_EXPLOSION_1, self->position, vec3(0,0,0), 1);
         self->active = false;
         if (flags_not(ship->flags, SHIP_SHIELDED)) {
-            if (game_player_for_pilot(ship->pilot) >= 0) {
+            if (ship->pilot == g.pilot) {
                 ship->velocity = vec3_sub(ship->velocity, vec3_mulf(ship->velocity, 0.125));
                 camera_set_shake(&g.cameras[game_player_for_pilot(ship->pilot)], CAMERA_SHAKE_LONG);
                 if (ship->pilot == g.pilot) rumble_impulse(0.8f, 0.4f); // Added rumble
