@@ -316,6 +316,7 @@ void weapon_update_wait_for_delay(weapon_t *self) {
 
 void weapon_fire_mine(ship_t *ship) {
 	float timer = 0;
+	if (ship->pilot == g.pilot) rumble_pulses(0.5f, 3, 0.12f, 0.12f);
 	for (int i = 0; i < WEAPON_MINE_COUNT; i++) {
 		weapon_t *self = weapon_init(ship);
 		if (!self) {
@@ -369,28 +370,29 @@ void weapon_update_mine_lights(weapon_t *self, int index) {
 }
 
 void weapon_update_mine(weapon_t *self) {
-	if (self->timer <= 0) {
-		self->active = false;
-		return;
-	}
+    if (self->timer <= 0) {
+        self->active = false;
+        return;
+    }
 
 	// TODO: oscillate perpendicular to track!?
 	self->angle.y += system_tick();
 
-	ship_t *ship = weapon_collides_with_ship(self);
-	if (ship) {
-		sfx_play_at(SFX_EXPLOSION_1, self->position, vec3(0,0,0), 1);
-		self->active = false;
-		if (flags_not(ship->flags, SHIP_SHIELDED)) {
-			if (ship->pilot == g.pilot) {
-				ship->velocity = vec3_sub(ship->velocity, vec3_mulf(ship->velocity, 0.125));
-				camera_set_shake(&g.camera, CAMERA_SHAKE_LONG);
-			}
-			else {
-				ship->speed = ship->speed * 0.125;
-			}
-		}
-	}	
+    ship_t *ship = weapon_collides_with_ship(self);
+    if (ship) {
+        sfx_play_at(SFX_EXPLOSION_1, self->position, vec3(0,0,0), 1);
+        self->active = false;
+        if (flags_not(ship->flags, SHIP_SHIELDED)) {
+            if (game_player_for_pilot(ship->pilot) >= 0) {
+                ship->velocity = vec3_sub(ship->velocity, vec3_mulf(ship->velocity, 0.125));
+                camera_set_shake(&g.cameras[game_player_for_pilot(ship->pilot)], CAMERA_SHAKE_LONG);
+                if (ship->pilot == g.pilot) rumble_impulse(0.8f, 0.4f); // Added rumble
+            }
+            else {
+                ship->speed = ship->speed * 0.125;
+            }
+        }
+    }   
 }
 
 
@@ -412,6 +414,7 @@ void weapon_fire_missile(ship_t *ship) {
 
 	if (self->owner->pilot == g.pilot) {
 		sfx_play(SFX_MISSILE_FIRE);
+		rumble_impulse(1.0f, 0.2f);
 	}
 }
 
@@ -435,6 +438,7 @@ void weapon_update_missile(weapon_t *self) {
 				ship->angular_velocity.z += rand_float(-0.1, 0.1);
 				ship->turn_rate_from_hit = rand_float(-0.1, 0.1);
 				camera_set_shake(&g.camera, CAMERA_SHAKE_LONG);
+				if (ship->pilot == g.pilot) rumble_impulse(1.0f, 0.5f);
 			}
 			else {
 				ship->speed = ship->speed * 0.03125;
@@ -462,6 +466,7 @@ void weapon_fire_rocket(ship_t *ship) {
 
 	if (self->owner->pilot == g.pilot) {
 		sfx_play(SFX_MISSILE_FIRE);
+		rumble_impulse(1.0f, 0.2f);
 	}
 }
 
@@ -483,6 +488,7 @@ void weapon_update_rocket(weapon_t *self) {
 				ship->angular_velocity.z += rand_float(-0.1, 0.1);;
 				ship->turn_rate_from_hit = rand_float(-0.1, 0.1);;
 				camera_set_shake(&g.camera, CAMERA_SHAKE_LONG);
+				if (ship->pilot == g.pilot) rumble_impulse(1.0f, 0.5f);
 			}
 			else {
 				ship->speed = ship->speed * 0.03125;
@@ -532,6 +538,7 @@ void weapon_update_ebolt(weapon_t *self) {
 		if (flags_not(ship->flags, SHIP_SHIELDED)) {
 			flags_add(ship->flags, SHIP_ELECTROED);
 			ship->ebolt_timer = WEAPON_EBOLT_DURATION;
+			if (ship->pilot == g.pilot) rumble_impulse(0.5f, 0.4f);
 		}
 	}
 }
@@ -602,6 +609,7 @@ void weapon_fire_turbo(ship_t *ship) {
 	if (ship->pilot == g.pilot) {
 		sfx_t *sfx = sfx_play(SFX_MISSILE_FIRE);
 		sfx->pitch = 0.25;
+		rumble_impulse(1.0f, 1.0f);
 	}
 }
 
