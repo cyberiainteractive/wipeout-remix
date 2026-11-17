@@ -717,6 +717,66 @@ static void page_race_type_init(menu_t *menu) {
 }
 
 // -----------------------------------------------------------------------------
+// Team
+
+static void button_team_select(menu_t *menu, int data) {
+	g.team = data;
+	page_pilot_init(menu);
+}
+
+static void page_team_draw(menu_t *menu, int data) {
+	int team_model_index = (data + 3) % 4; // models in the prm are shifted by -1
+	draw_model(models.teams[team_model_index], vec2(0, -0.2), vec3(0, 0, -10000), system_cycle_time());
+	draw_model(g.ships[def.teams[data].pilots[0]].model, vec2(0, -0.3), vec3(-700, -800, -1300), system_cycle_time()*1.1);
+	draw_model(g.ships[def.teams[data].pilots[1]].model, vec2(0, -0.3), vec3( 700, -800, -1300), system_cycle_time()*1.2);
+}
+
+static void page_team_init(menu_t *menu) {
+	menu_page_t *page = menu_push(menu, "SELECT YOUR TEAM", page_team_draw);
+	flags_add(page->layout_flags, MENU_FIXED);
+	page->title_pos = vec2i(0, 30);
+	page->title_anchor = UI_POS_TOP | UI_POS_CENTER;
+	page->items_pos = vec2i(0, -110);
+	page->items_anchor = UI_POS_BOTTOM | UI_POS_CENTER;
+	for (int i = 0; i < len(def.teams); i++) {
+		menu_page_add_button(page, i, def.teams[i].name, button_team_select);
+	}
+}
+
+
+
+// -----------------------------------------------------------------------------
+// Pilot
+
+static void button_pilot_select(menu_t *menu, int data) {
+	g.pilot = data;
+	if (g.race_type != RACE_TYPE_CHAMPIONSHIP) {
+		page_circuit_init(menu);
+	}
+	else {
+		g.circuit = 0;
+		game_reset_championship();
+		game_set_scene(GAME_SCENE_RACE);
+	}
+}
+
+static void page_pilot_draw(menu_t *menu, int data) {
+	draw_model(models.pilots[def.pilots[data].logo_model], vec2(0, -0.2), vec3(0, 0, -10000), system_cycle_time());
+}
+
+static void page_pilot_init(menu_t *menu) {
+	menu_page_t *page = menu_push(menu, "CHOOSE YOUR PILOT", page_pilot_draw);
+	flags_add(page->layout_flags, MENU_FIXED);
+	page->title_pos = vec2i(0, 30);
+	page->title_anchor = UI_POS_TOP | UI_POS_CENTER;
+	page->items_pos = vec2i(0, -110);
+	page->items_anchor = UI_POS_BOTTOM | UI_POS_CENTER;
+	for (int i = 0; i < len(def.teams[g.team].pilots); i++) {
+		menu_page_add_button(page, def.teams[g.team].pilots[i], def.pilots[def.teams[g.team].pilots[i]].name, button_pilot_select);
+	}
+}
+
+// -----------------------------------------------------------------------------
 // Multiplayer
 
 static void button_multiplayer_select(menu_t *menu, int data) {
@@ -789,66 +849,6 @@ static void page_pilot4_init(menu_t *menu) {
 	page->items_anchor = UI_POS_BOTTOM | UI_POS_CENTER;
 	for (int i = 0; i < len(def.pilots); i++) {
 		if (i != g.pilot) menu_page_add_button(page, i, def.pilots[i].name, button_pilot4_select);
-	}
-}
-
-// -----------------------------------------------------------------------------
-// Team
-
-static void button_team_select(menu_t *menu, int data) {
-	g.team = data;
-	page_pilot_init(menu);
-}
-
-static void page_team_draw(menu_t *menu, int data) {
-	int team_model_index = (data + 3) % 4; // models in the prm are shifted by -1
-	draw_model(models.teams[team_model_index], vec2(0, -0.2), vec3(0, 0, -10000), system_cycle_time());
-	draw_model(g.ships[def.teams[data].pilots[0]].model, vec2(0, -0.3), vec3(-700, -800, -1300), system_cycle_time()*1.1);
-	draw_model(g.ships[def.teams[data].pilots[1]].model, vec2(0, -0.3), vec3( 700, -800, -1300), system_cycle_time()*1.2);
-}
-
-static void page_team_init(menu_t *menu) {
-	menu_page_t *page = menu_push(menu, "SELECT YOUR TEAM", page_team_draw);
-	flags_add(page->layout_flags, MENU_FIXED);
-	page->title_pos = vec2i(0, 30);
-	page->title_anchor = UI_POS_TOP | UI_POS_CENTER;
-	page->items_pos = vec2i(0, -110);
-	page->items_anchor = UI_POS_BOTTOM | UI_POS_CENTER;
-	for (int i = 0; i < len(def.teams); i++) {
-		menu_page_add_button(page, i, def.teams[i].name, button_team_select);
-	}
-}
-
-
-
-// -----------------------------------------------------------------------------
-// Pilot
-
-static void button_pilot_select(menu_t *menu, int data) {
-	g.pilot = data;
-	if (g.race_type != RACE_TYPE_CHAMPIONSHIP) {
-		page_circuit_init(menu);
-	}
-	else {
-		g.circuit = 0;
-		game_reset_championship();
-		game_set_scene(GAME_SCENE_RACE);
-	}
-}
-
-static void page_pilot_draw(menu_t *menu, int data) {
-	draw_model(models.pilots[def.pilots[data].logo_model], vec2(0, -0.2), vec3(0, 0, -10000), system_cycle_time());
-}
-
-static void page_pilot_init(menu_t *menu) {
-	menu_page_t *page = menu_push(menu, "CHOOSE YOUR PILOT", page_pilot_draw);
-	flags_add(page->layout_flags, MENU_FIXED);
-	page->title_pos = vec2i(0, 30);
-	page->title_anchor = UI_POS_TOP | UI_POS_CENTER;
-	page->items_pos = vec2i(0, -110);
-	page->items_anchor = UI_POS_BOTTOM | UI_POS_CENTER;
-	for (int i = 0; i < len(def.teams[g.team].pilots); i++) {
-		menu_page_add_button(page, def.teams[g.team].pilots[i], def.pilots[def.teams[g.team].pilots[i]].name, button_pilot_select);
 	}
 }
 
