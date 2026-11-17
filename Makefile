@@ -135,6 +135,7 @@ COMMON_SRC = \
 	src/wipeout/ship_ai.c \
 	src/wipeout/ship_player.c \
 	src/wipeout/track.c \
+	src/wipeout/rumble.c \
 	src/wipeout/weapon.c \
 	src/wipeout/particle.c \
 	src/wipeout/sfx.c \
