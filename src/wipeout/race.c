@@ -107,6 +107,7 @@ void race_update(void) {
 		particles_update();
 		scene_update();
 		map_update();
+		rumble_update();
 		if (g.race_type != RACE_TYPE_TIME_TRIAL && save.weapons) {
 			track_cycle_pickups();
 		}
