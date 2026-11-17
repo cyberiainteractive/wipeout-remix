@@ -385,7 +385,7 @@ void weapon_update_mine(weapon_t *self) {
         if (flags_not(ship->flags, SHIP_SHIELDED)) {
             if (ship->pilot == g.pilot) {
                 ship->velocity = vec3_sub(ship->velocity, vec3_mulf(ship->velocity, 0.125));
-                camera_set_shake(&g.cameras[game_player_for_pilot(ship->pilot)], CAMERA_SHAKE_LONG);
+				camera_set_shake(&g.camera, CAMERA_SHAKE_LONG);
                 if (ship->pilot == g.pilot) rumble_impulse(0.8f, 0.4f); // Added rumble
             }
             else {
