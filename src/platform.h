@@ -9,6 +9,7 @@ double platform_now(void);
 bool platform_get_fullscreen(void);
 void platform_set_fullscreen(bool fullscreen);
 void platform_set_audio_mix_cb(void (*cb)(float *buffer, uint32_t len));
+void platform_set_rumble(float strength);
 
 bool platform_asset_exists(const char *name);
 FILE *platform_open_asset(const char *name, const char *mode);
