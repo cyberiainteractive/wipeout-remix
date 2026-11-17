@@ -157,6 +157,7 @@ typedef struct {
 	char *portrait;
 	int logo_model;
 	int team;
+	int gender;
 } pilot_t;
 
 typedef struct {
