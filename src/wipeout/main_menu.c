@@ -57,6 +57,10 @@ static void button_start_game(menu_t *menu, int data) {
 	page_race_class_init(menu);
 }
 
+static void button_start_multiplayer_game(menu_t *menu, int data) {
+	page_race_class_init(menu);
+}
+
 static void button_options(menu_t *menu, int data) {
 	page_options_init(menu);
 }
@@ -77,8 +81,14 @@ static void button_quit(menu_t *menu, int data) {
 static void page_main_draw(menu_t *menu, int data) {
 	switch (data) {
 		case 0: draw_model(g.ships[0].model, vec2(0, -0.1), vec3(0, 0, -700), system_cycle_time()); break;
-		case 1: draw_model(models.misc.options, vec2(0, -0.2), vec3(0, 0, -700), system_cycle_time()); break;
+		case 1:
+		    draw_model(g.ships[0].model, vec2(-0.5,  0.25), vec3(0, 0, -700), system_cycle_time());
+		    draw_model(g.ships[1].model, vec2( 0.5,  0.25), vec3(0, 0, -700), system_cycle_time());
+		    draw_model(g.ships[2].model, vec2(-0.5, -0.25), vec3(0, 0, -700), system_cycle_time());
+		    draw_model(g.ships[3].model, vec2( 0.5, -0.25), vec3(0, 0, -700), system_cycle_time());
+		    break;		
 		case 2: draw_model(models.misc.msdos, vec2(0, -0.2), vec3(0, 0, -700), system_cycle_time()); break;
+		case 3: draw_model(models.misc.msdos, vec2(0, -0.2), vec3(0, 0, -700), system_cycle_time()); break;
 	}
 }
 
@@ -91,11 +101,11 @@ static void page_main_init(menu_t *menu) {
 	page->items_anchor = UI_POS_BOTTOM | UI_POS_CENTER;
 
 	menu_page_add_button(page, 0, "START GAME", button_start_game);
-	menu_page_add_button(page, 0, "MULTIPLAYER", button_multiplayer_select);
-	menu_page_add_button(page, 1, "OPTIONS", button_options);
+	menu_page_add_button(page, 1, "MULTIPLAYER", button_start_multiplayer_game);
+	menu_page_add_button(page, 2, "OPTIONS", button_options);
 
 	#ifndef __EMSCRIPTEN__
-		menu_page_add_button(page, 2, "QUIT", button_quit);
+		menu_page_add_button(page, 3, "QUIT", button_quit);
 	#endif
 }
 
@@ -716,6 +726,8 @@ static void page_race_type_init(menu_t *menu) {
 	}
 }
 
+
+
 // -----------------------------------------------------------------------------
 // Team
 
@@ -773,82 +785,6 @@ static void page_pilot_init(menu_t *menu) {
 	page->items_anchor = UI_POS_BOTTOM | UI_POS_CENTER;
 	for (int i = 0; i < len(def.teams[g.team].pilots); i++) {
 		menu_page_add_button(page, def.teams[g.team].pilots[i], def.pilots[def.teams[g.team].pilots[i]].name, button_pilot_select);
-	}
-}
-
-// -----------------------------------------------------------------------------
-// Multiplayer
-
-static void button_multiplayer_select(menu_t *menu, int data) {
-}
-
-static void page_multiplayer_init(menu_t *menu) {
-	menu_page_t *page = menu_push(menu, "SELECT PLAYERS", NULL);
-	menu_page_add_button(page, 1, "1 PLAYER", button_multiplayer_select);
-	menu_page_add_button(page, 2, "2 PLAYERS", button_multiplayer_select);
-	menu_page_add_button(page, 2, "3 PLAYERS", button_multiplayer_select);
-	menu_page_add_button(page, 2, "4 PLAYERS", button_multiplayer_select);
-
-}
-
-static void button_pilot2_select(menu_t *menu, int data) {
-	g.pilots[1] = data;
-	finish_pilot_select(menu);
-}
-
-static void button_pilot3_select(menu_t *menu, int data) {
-	g.pilots[2] = data;
-	finish_pilot_select(menu);
-}
-
-static void button_pilot4_select(menu_t *menu, int data) {
-	g.pilots[3] = data;
-	finish_pilot_select(menu);
-}
-
-static void button_pilot_select(menu_t *menu, int data) {
-	g.pilot = data;
-	if (g.players == 2) {
-		page_pilot2_init(menu);
-	}
-	else {
-		finish_pilot_select(menu);
-	}
-}
-
-static void page_pilot2_init(menu_t *menu) {
-	menu_page_t *page = menu_push(menu, "PLAYER 2 CHOOSE PILOT", page_pilot_draw);
-	flags_add(page->layout_flags, MENU_FIXED);
-	page->title_pos = vec2i(0, 30);
-	page->title_anchor = UI_POS_TOP | UI_POS_CENTER;
-	page->items_pos = vec2i(0, -110);
-	page->items_anchor = UI_POS_BOTTOM | UI_POS_CENTER;
-	for (int i = 0; i < len(def.pilots); i++) {
-		if (i != g.pilot) menu_page_add_button(page, i, def.pilots[i].name, button_pilot2_select);
-	}
-}
-
-static void page_pilot3_init(menu_t *menu) {
-	menu_page_t *page = menu_push(menu, "PLAYER 3 CHOOSE PILOT", page_pilot_draw);
-	flags_add(page->layout_flags, MENU_FIXED);
-	page->title_pos = vec2i(0, 30);
-	page->title_anchor = UI_POS_TOP | UI_POS_CENTER;
-	page->items_pos = vec2i(0, -110);
-	page->items_anchor = UI_POS_BOTTOM | UI_POS_CENTER;
-	for (int i = 0; i < len(def.pilots); i++) {
-		if (i != g.pilot) menu_page_add_button(page, i, def.pilots[i].name, button_pilot3_select);
-	}
-}
-
-static void page_pilot4_init(menu_t *menu) {
-	menu_page_t *page = menu_push(menu, "PLAYER 4 CHOOSE PILOT", page_pilot_draw);
-	flags_add(page->layout_flags, MENU_FIXED);
-	page->title_pos = vec2i(0, 30);
-	page->title_anchor = UI_POS_TOP | UI_POS_CENTER;
-	page->items_pos = vec2i(0, -110);
-	page->items_anchor = UI_POS_BOTTOM | UI_POS_CENTER;
-	for (int i = 0; i < len(def.pilots); i++) {
-		if (i != g.pilot) menu_page_add_button(page, i, def.pilots[i].name, button_pilot4_select);
 	}
 }
 
@@ -949,4 +885,3 @@ void main_menu_update(void) {
 
 	menu_update(main_menu);
 }
-
