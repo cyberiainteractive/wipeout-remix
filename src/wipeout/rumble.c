@@ -16,13 +16,13 @@ static float pulse_timer;
 static bool pulse_on_phase;
 
 void rumble_impulse(float strength, float duration) {
-	if (!save.vibration_toggle || g.is_attract_mode) return;
+	if (save.vibration_toggle == 1 || g.is_attract_mode) return;
 	impulse_strength = fmaxf(impulse_strength, strength);
 	impulse_time = fmaxf(impulse_time, duration);
 }
 
 void rumble_pulses(float strength, int count, float on, float off) {
-	if (!save.vibration_toggle || g.is_attract_mode) return;
+	if (save.vibration_toggle == 1 || g.is_attract_mode) return;
 	pulse_strength = strength;
 	pulse_count = count;
 	pulse_on = on;
@@ -62,7 +62,7 @@ void rumble_update(void) {
 	if (impulse_time > 0) level = fmaxf(level, impulse_strength);
 	if (pulse_on_phase) level = fmaxf(level, pulse_strength);
 	if (flags_is(player->flags, SHIP_SHIELDED)) level = fmaxf(level, 0.25f);
-	if (!save.vibration_toggle || g.is_attract_mode || flags_not(player->flags, SHIP_RACING)) {
+	if (save.vibration_toggle == 1 || g.is_attract_mode || flags_not(player->flags, SHIP_RACING)) {
 		level = 0;
 	}
 	platform_set_rumble(fminf(fmaxf(level, 0), 1));
