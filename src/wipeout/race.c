@@ -13,6 +13,7 @@
 #include "droid.h"
 #include "camera.h"
 #include "scene.h"
+#include "rumble.h"
 #include "game.h"
 #include "hud.h"
 #include "sfx.h"
