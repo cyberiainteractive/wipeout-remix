@@ -659,7 +659,6 @@ save_t save = {
 
 	// Multiplayer options
 	.taunts_enabled = 0,
-	.taunt_voice = 0,
 
 	.has_rapier_class = false,  // for testing; should be false in prod
 	.has_bonus_circuits = false, // for testing; should be false in prod
