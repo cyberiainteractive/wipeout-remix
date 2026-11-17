@@ -98,6 +98,20 @@ static void page_main_draw(menu_t *menu, int data) {
 	}
 }
 
+static void page_multiplayer_draw(menu_t *menu, int data) {
+	switch (data) {
+		case 0: draw_model(g.ships[0].model, vec2(0, -0.1), vec3(0, 0, -700), system_cycle_time()); break;
+		case 1:
+		    draw_model(g.ships[0].model, vec2(-0.5,  0.25), vec3(0, 0, -700), system_cycle_time());
+		    draw_model(g.ships[1].model, vec2( 0.5,  0.25), vec3(0, 0, -700), system_cycle_time());
+		    draw_model(g.ships[2].model, vec2(-0.5, -0.25), vec3(0, 0, -700), system_cycle_time());
+		    draw_model(g.ships[3].model, vec2( 0.5, -0.25), vec3(0, 0, -700), system_cycle_time());
+		    break;		
+		case 2: draw_model(models.misc.msdos, vec2(0, -0.2), vec3(0, 0, -700), system_cycle_time()); break;
+		case 3: draw_model(models.misc.msdos, vec2(0, -0.2), vec3(0, 0, -700), system_cycle_time()); break;
+	}
+}
+
 static void page_main_init(menu_t *menu) {
 	menu_page_t *page = menu_push(menu, "WIPEOUT REMIX", page_main_draw);
 	flags_add(page->layout_flags, MENU_FIXED);
@@ -116,7 +130,7 @@ static void page_main_init(menu_t *menu) {
 }
 
 static void page_multiplayer_init(menu_t *menu) {
-	menu_page_t *page = menu_push(menu, "MULTIPLAYER", page_options_draw);
+	menu_page_t *page = menu_push(menu, "MULTIPLAYER", page_multiplayer_draw);
 	flags_add(page->layout_flags, MENU_FIXED);
 	page->title_pos = vec2i(0, 30);
 	page->title_anchor = UI_POS_TOP | UI_POS_CENTER;
