@@ -11,6 +11,7 @@ Originally this started as a modification of wipeout-rewrite for wipEoutX, an Xb
 # Working:
 - [x] Modernized SDL3 backend which handles window rendering, audio, and input (controller + keyboard/mouse)
 - [x] Modified menu assets for ease of navigation, including bugfixes
+- [x] Vibration (thanks Mayo1970!)
 - [x] WO2-style HUD if game files are installed
 - [x] Texture filtering options (off for classic pixelated textures, on for smoother textures)
 - [x] Wipeout XL/2097 + 64 track support in single races (requires track data from Wipeout XL/2097 + Wipeout 64)
@@ -22,7 +23,6 @@ Originally this started as a modification of wipeout-rewrite for wipEoutX, an Xb
 
 # Partially Working:
 - [x] Wipeout 2097/XL style "Preferences" menu with options such as default camera mode, default name, weapons on/off, etc)
-- [x] Vibration (thanks Mayo1970!)
 - [x] Gyro steering (implemented but untested)
 
 # Planned:
