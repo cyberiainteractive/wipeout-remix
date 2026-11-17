@@ -343,7 +343,6 @@ typedef struct {
 
 	// Multiplayer options
 	bool taunts_enabled;
-	bool taunt_voice;
 
 	uint32_t has_rapier_class;
 	uint32_t has_bonus_circuits;
