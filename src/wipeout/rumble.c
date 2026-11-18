@@ -16,13 +16,13 @@ static float pulse_timer;
 static bool pulse_on_phase;
 
 void rumble_impulse(float strength, float duration) {
-	if (save.vibration_toggle == 0 || g.is_attract_mode) return;
+	if (save.vibration_toggle != 0 || g.is_attract_mode) return;
 	impulse_strength = fmaxf(impulse_strength, strength);
 	impulse_time = fmaxf(impulse_time, duration);
 }
 
 void rumble_pulses(float strength, int count, float on, float off) {
-	if (save.vibration_toggle == 0 || g.is_attract_mode) return;
+	if (save.vibration_toggle != 0 || g.is_attract_mode) return;
 	pulse_strength = strength;
 	pulse_count = count;
 	pulse_on = on;
