@@ -465,6 +465,7 @@ static void toggle_screen_shake(menu_t *menu, int data) {
 static void toggle_texture_filter(menu_t *menu, int data) {
 	save.texture_filter = data;
 	save.is_dirty = true;
+	render_set_texture_filter(data);
 }
 
 static const char *opts_off_on[] = {"OFF", "ON"};
